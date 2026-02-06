@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Murid - SmartExam</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --success-color: #00d084;
+      --warning-color: #ffd60a;
+      --danger-color: #ef476f;
+      --sidebar-bg: #0f172a;
+      --bg-color: #f8fafc;
+      --text-main: #334155;
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-color) 0%, #e0e7ff 100%);
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      height: 100vh;
+      background: linear-gradient(180deg, var(--sidebar-bg) 0%, #1a243b 100%);
+      color: #fff;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      padding: 25px 0;
+      z-index: 1000;
+      overflow-y: auto;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    .sidebar-brand {
+      padding: 0 25px 30px 25px;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 25px;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-brand i {
+      color: var(--accent-color);
+      font-size: 32px;
+    }
+
+    .sidebar-section {
+      padding: 0 15px;
+      margin-bottom: 30px;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #94a3b8;
+      padding: 0 12px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar-nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary-color);
+      transform: scaleY(0);
+      transition: transform 0.3s;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .sidebar-nav-item:hover {
+      color: #fff;
+      background: rgba(67, 97, 238, 0.15);
+      cursor: pointer;
+    }
+
+    .sidebar-nav-item.active {
+      background: linear-gradient(90deg, rgba(67, 97, 238, 0.2) 0%, transparent 100%);
+      color: #fff;
+    }
+
+    .sidebar-nav-item.active::before {
+      transform: scaleY(1);
+    }
+
+    .sidebar-nav-item i {
+      font-size: 18px;
+      min-width: 24px;
+      pointer-events: none;
+    }
+
+    .sidebar-nav-item span {
+      pointer-events: none;
+    }
+
+    .sidebar-footer {
+      padding: 0 15px;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-left: 280px;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER CARD ===== */
+    .header-card {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-card::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent);
+      border-radius: 50%;
+    }
+
+    .header-card::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      left: -50px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+      border-radius: 50%;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-content h2 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .header-content p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 12px 18px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .user-profile img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      object-fit: cover;
+    }
+
+    .user-profile-info h6 {
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .user-profile-info small {
+      opacity: 0.85;
+    }
+
+    /* ===== STAT CARDS ===== */
+    .stat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid #f1f5f9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(67, 97, 238, 0.05), transparent);
+      transition: all 0.4s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card:hover::before {
+      transform: translate(50%, 50%);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 15px;
+      background: var(--bg-color);
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-card.primary .stat-icon {
+      background: #e0e7ff;
+      color: var(--primary-color);
+    }
+
+    .stat-card.success .stat-icon {
+      background: #dcfce7;
+      color: var(--success-color);
+    }
+
+    .stat-card.warning .stat-icon {
+      background: #fef9c3;
+      color: #ca8a04;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== CUSTOM CARDS ===== */
+    .card-custom {
+      border: none;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--card-shadow);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      border: 1px solid #f1f5f9;
+    }
+
+    .card-custom:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-custom .card-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+      border: none;
+      padding: 25px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .card-custom .card-header h5 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+      font-size: 1.2rem;
+    }
+
+    .card-custom .card-header i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .card-custom .card-body {
+      padding: 25px;
+    }
+
+    /* ===== EXAM ITEMS ===== */
+    .exam-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 14px;
+      border-left: 5px solid var(--warning-color);
+      transition: all 0.3s;
+      border: 1px solid #e2e8f0;
+    }
+
+    .exam-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      border-left-color: var(--primary-color);
+    }
+
+    .exam-info h6 {
+      margin: 0 0 5px 0;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .exam-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .btn-exam {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-exam:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+      color: #fff;
+    }
+
+    /* ===== TABLE ===== */
+    .table-custom {
+      color: var(--text-main);
+    }
+
+    .table-custom thead th {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+      color: #475569;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      padding: 15px 12px;
+    }
+
+    .table-custom tbody td {
+      vertical-align: middle;
+      padding: 15px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      font-weight: 500;
+    }
+
+    .table-custom tbody tr {
+      transition: all 0.2s;
+    }
+
+    .table-custom tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .badge-custom {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .badge-success {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .empty-state img {
+      width: 100px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+
+    .empty-state p {
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+
+    /* ===== ANNOUNCEMENT CARD ===== */
+    .announcement-card {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: #fff;
+      border-radius: 18px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .announcement-card::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+      border-radius: 50%;
+    }
+
+    .announcement-card i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+      opacity: 0.9;
+    }
+
+    .announcement-card h5 {
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .announcement-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* ===== ACHIEVEMENT CARD ===== */
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary-color);
+      transition: all 0.2s;
+    }
+
+    .achievement-item:hover {
+      background: #f1f5f9;
+      transform: translateX(4px);
+    }
+
+    .achievement-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      background: #e0e7ff;
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    .achievement-info h6 {
+      margin: 0 0 3px 0;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .achievement-info small {
+      color: #94a3b8;
+    }
+
+    .achievement-score {
+      margin-left: auto;
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 0;
+        left: -280px;
+      }
+
+      .sidebar.show {
+        left: 0;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 15px;
+      }
+
+      .header-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+      }
+
+      .header-content h2 {
+        font-size: 1.5rem;
+      }
+
+      .user-profile {
+        margin-top: 15px;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card {
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <i class="bi bi-lightning-charge-fill"></i>
+      <span>SmartExam</span>
+    </div>
+
+    <div class="sidebar-section">
+      <p class="sidebar-section-title">Main</p>
+      <a href="#dashboard" class="sidebar-nav-item active" onclick="showSection('dashboard'); return false;">
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#daftar-ujian" class="sidebar-nav-item" onclick="showSection('daftar-ujian'); return false;">
+        <i class="bi bi-file-earmark-text-fill"></i>
+        <span>Daftar Ujian</span>
+      </a>
+      <a href="#hasil-nilai" class="sidebar-nav-item" onclick="showSection('hasil-nilai'); return false;">
+        <i class="bi bi-bar-chart-line-fill"></i>
+        <span>Hasil Nilai</span>
+      </a>
+      <a href="#profil" class="sidebar-nav-item" onclick="showSection('profil'); return false;">
+        <i class="bi bi-person-circle"></i>
+        <span>Profil Saya</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="/logout" class="sidebar-nav-item" style="color: #ef476f;">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- HEADER CARD -->
+    <div class="header-card">
+      <div class="header-content">
+        <h2>Halo, {{ session['user']['username'] }}! 👋</h2>
+        <p>Siap untuk meraih nilai terbaik hari ini?</p>
+      </div>
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name={{ session['user']['username'] }}&background=random&color=fff" alt="Profile">
+        <div class="user-profile-info">
+          <h6>{{ session['user']['username'] }}</h6>
+          <small>Murid</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <section id="dashboard-content">
+      <!-- STAT CARDS -->
+      <div class="row mb-40" style="margin-bottom: 30px;">
+        <div class="col-md-4 mb-3">
+          <div class="stat-card primary">
+            <div class="stat-icon">
+              <i class="bi bi-journal-check"></i>
+            </div>
+            <p class="stat-label">Total Ujian Selesai</p>
+            <div class="stat-value">{{ ujian_selesai|length }}</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stat-card warning">
+            <div class="stat-icon">
+              <i class="bi bi-hourglass-split"></i>
+            </div>
+            <p class="stat-label">Ujian Pending</p>
+            <div class="stat-value">{{ ujian_belum|length }}</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stat-card success">
+            <div class="stat-icon">
+              <i class="bi bi-trophy-fill"></i>
+            </div>
+            <p class="stat-label">Rata-rata Nilai</p>
+            <div class="stat-value">88.5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM & HISTORY SECTION -->
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- PERLU DIKERJAKAN -->
+          <div class="card-custom mb-4">
+            <div class="card-header">
+              <h5><i class="bi bi-clock-history"></i> Ujian Perlu Dikerjakan</h5>
+            </div>
+            <div class="card-body">
+              {% if ujian_belum %}
+                {% for u in ujian_belum %}
+                  <div class="exam-item">
+                    <div class="exam-info">
+                      <h6>{{ u['mapel'] }}</h6>
+                      <p>{{ u['judul'] }} • {{ u['jumlah_soal'] }} soal</p>
+                    </div>
+                    <a href="{{ url_for('kerjakan_ujian', ujian_id=u['id']) }}" class="btn-exam">
+                      Kerjakan <i class="bi bi-arrow-right"></i>
+                    </a>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="empty-state">
+                  <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Relax">
+                  <p>Hore! Tidak ada ujian yang harus dikerjakan saat ini.</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- RIWAYAT UJIAN -->
+          <div class="card-custom">
+            <div class="card-header">
+              <h5><i class="bi bi-check-circle-fill"></i> Riwayat Ujian Terakhir</h5>
+            </div>
+            <div class="card-body">
+              {% if ujian_selesai %}
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th>Mata Pelajaran</th>
+                        <th>Judul Ujian</th>
+                        <th>Status</th>
+                        <th>Nilai</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for u in ujian_selesai %}
+                        <tr>
+                          <td class="fw-bold">{{ u['mapel'] }}</td>
+                          <td>{{ u['judul'] }}</td>
+                          <td><span class="badge-custom badge-success">Selesai</span></td>
+                          <td><span class="fw-bold" style="color: var(--primary-color); font-size: 1.1rem;">{{ u['nilai'] }}</span></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <div class="empty-state">
+                  <p>Belum ada riwayat ujian. Mulai kerjakan ujian untuk melihat hasilnya.</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="col-lg-4">
+          <!-- ANNOUNCEMENT -->
+          <div class="announcement-card">
+            <i class="bi bi-megaphone-fill"></i>
+            <h5>Pengumuman Penting</h5>
+            <p>Ujian Tengah Semester akan dimulai tanggal 20 Juni 2025. Persiapkan dirimu dengan baik!</p>
+          </div>
+
+          <!-- ACHIEVEMENTS -->
+          <div class="card-custom">
+            <div class="card-header">
+              <h5><i class="bi bi-award"></i> Pencapaian Terbaru</h5>
+            </div>
+            <div class="card-body">
+              <div class="achievement-item">
+                <div class="achievement-icon"><i class="bi bi-calculator"></i></div>
+                <div class="achievement-info">
+                  <h6>Matematika</h6>
+                  <small>1 Juni 2025</small>
+                </div>
+                <div class="achievement-score">85</div>
+              </div>
+              <div class="achievement-item">
+                <div class="achievement-icon"><i class="bi bi-flask"></i></div>
+                <div class="achievement-info">
+                  <h6>Kimia</h6>
+                  <small>3 Juni 2025</small>
+                </div>
+                <div class="achievement-score">90</div>
+              </div>
+              <div class="achievement-item">
+                <div class="achievement-icon"><i class="bi bi-book"></i></div>
+                <div class="achievement-info">
+                  <h6>Bahasa Indonesia</h6>
+                  <small>5 Juni 2025</small>
+                </div>
+                <div class="achievement-score">88</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAFTAR UJIAN SECTION -->
+    <section id="daftar-ujian-content" style="display: none;">
+      <div class="card-custom">
+        <div class="card-header">
+          <h5><i class="bi bi-list-check"></i> Semua Ujian Tersedia</h5>
+        </div>
+        <div class="card-body">
+          {% if ujian_belum %}
+            {% for u in ujian_belum %}
+              <div class="exam-item">
+                <div class="exam-info">
+                  <h6>{{ u['mapel'] }}</h6>
+                  <p>{{ u['judul'] }} • {{ u['jumlah_soal'] }} soal</p>
+                </div>
+                <a href="{{ url_for('kerjakan_ujian', ujian_id=u['id']) }}" class="btn-exam">
+                  Mulai Ujian <i class="bi bi-play-fill"></i>
+                </a>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">
+              <p>Tidak ada ujian yang tersedia.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <!-- HASIL NILAI SECTION -->
+    <section id="hasil-nilai-content" style="display: none;">
+      <div class="card-custom">
+        <div class="card-header">
+          <h5><i class="bi bi-graph-up"></i> Detail Nilai & Analisis</h5>
+        </div>
+        <div class="card-body">
+          {% if ujian_selesai %}
+            <div class="table-responsive">
+              <table class="table table-custom">
+                <thead>
+                  <tr>
+                    <th>Mata Pelajaran</th>
+                    <th>Judul Ujian</th>
+                    <th>Nilai</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for u in ujian_selesai %}
+                    <tr>
+                      <td class="fw-bold">{{ u['mapel'] }}</td>
+                      <td>{{ u['judul'] }}</td>
+                      <td><span class="fw-bold" style="color: var(--primary-color); font-size: 1.1rem;">{{ u['nilai'] }}</span></td>
+                      <td>
+                        {% if u['nilai'] >= 90 %}
+                          <span class="badge-custom badge-success">A</span>
+                        {% elif u['nilai'] >= 80 %}
+                          <span class="badge-custom badge-success">B</span>
+                        {% elif u['nilai'] >= 70 %}
+                          <span class="badge-custom" style="background: #fef9c3; color: #ca8a04;">C</span>
+                        {% else %}
+                          <span class="badge-custom" style="background: #fee2e2; color: #dc2626;">D</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if u['nilai'] >= 60 %}
+                          <span class="badge-custom badge-success">Lulus</span>
+                        {% else %}
+                          <span class="badge-custom" style="background: #fee2e2; color: #dc2626;">Belum Lulus</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <p>Belum ada nilai ujian. Mulai kerjakan ujian untuk melihat hasilnya.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFIL SECTION -->
+    <section id="profil-content" style="display: none;">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card-custom">
+            <div class="card-header">
+              <h5><i class="bi bi-person-check"></i> Informasi Profil</h5>
+            </div>
+            <div class="card-body">
+              <div style="padding: 20px; text-align: center;">
+                <img src="https://ui-avatars.com/api/?name={{ session['user']['username'] }}&size=150&background=random&color=fff" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; border: 5px solid #e0e7ff; margin-bottom: 20px;">
+                <h4>{{ session['user']['username'] }}</h4>
+                <p style="color: #94a3b8; margin: 10px 0;">Status: <span style="color: var(--success-color); font-weight: 700;">Murid Aktif</span></p>
+                <hr>
+                <div style="text-align: left; padding: 20px 0;">
+                  <p><strong>Username:</strong> {{ session['user']['username'] }}</p>
+                  <p><strong>Role:</strong> <span style="background: #e0e7ff; color: var(--primary-color); padding: 4px 12px; border-radius: 6px; font-weight: 600;">{{ session['user']['role'] }}</span></p>
+                  <p><strong>Total Ujian Selesai:</strong> {{ ujian_selesai|length }}</p>
+                  <p><strong>Rata-rata Nilai:</strong> <span style="color: var(--primary-color); font-weight: 700;">88.5</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card-custom">
+            <div class="card-header">
+              <h5><i class="bi bi-gear"></i> Pengaturan</h5>
+            </div>
+            <div class="card-body">
+              <button class="btn btn-outline-primary w-100 mb-2" onclick="Swal.fire('Coming Soon', 'Fitur pengaturan akan segera tersedia.', 'info')">
+                <i class="bi bi-pencil"></i> Edit Profil
+              </button>
+              <button class="btn btn-outline-primary w-100 mb-2" onclick="Swal.fire('Coming Soon', 'Fitur perubahan password akan segera tersedia.', 'info')">
+                <i class="bi bi-lock"></i> Ubah Password
+              </button>
+              <button class="btn btn-outline-danger w-100" onclick="confirmLogout()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Sidebar navigation
+    function showSection(section) {
+      // Hide all sections
+      const dashboardContent = document.getElementById('dashboard-content');
+      const daftarUjianContent = document.getElementById('daftar-ujian-content');
+      const hasilNilaiContent = document.getElementById('hasil-nilai-content');
+      const profilContent = document.getElementById('profil-content');
+
+      if (dashboardContent) dashboardContent.style.display = 'none';
+      if (daftarUjianContent) daftarUjianContent.style.display = 'none';
+      if (hasilNilaiContent) hasilNilaiContent.style.display = 'none';
+      if (profilContent) profilContent.style.display = 'none';
+
+      // Show selected section
+      if (section === 'dashboard') {
+        if (dashboardContent) dashboardContent.style.display = 'block';
+      } else if (section === 'daftar-ujian') {
+        if (daftarUjianContent) daftarUjianContent.style.display = 'block';
+      } else if (section === 'hasil-nilai') {
+        if (hasilNilaiContent) hasilNilaiContent.style.display = 'block';
+      } else if (section === 'profil') {
+        if (profilContent) profilContent.style.display = 'block';
+      }
+
+      // Update active nav
+      document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Find and activate the clicked item
+      const activeItem = document.querySelector(`[onclick="showSection('${section}')"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+
+    // Confirm logout
+    function confirmLogout() {
+      Swal.fire({
+        title: 'Yakin ingin logout?',
+        text: 'Anda akan keluar dari akun Anda.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#4361ee',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/logout';
+        }
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show dashboard by default
+      showSection('dashboard');
+    });
+  </script>
+
+</body>
+</html>
+     

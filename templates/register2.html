@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - SmartExam</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .register-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 50px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.8s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-icon {
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      display: block;
+      animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2e3338;
+      margin-bottom: 8px;
+    }
+
+    .logo-subtitle {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+
+    .register-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2e3338;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #2e3338;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label i {
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group-text {
+      background: transparent;
+      border: 2px solid #e9ecef;
+      border-right: none;
+      color: #667eea;
+      font-size: 1.1rem;
+      border-radius: 10px 0 0 10px;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e9ecef;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+      padding: 12px 15px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      background: #f8f9fc;
+    }
+
+    .input-group .form-control:focus, 
+    .input-group .form-select:focus {
+      border-color: #667eea;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .input-group:focus-within .input-group-text {
+      border-color: #667eea;
+      background: transparent;
+    }
+
+    .form-control:focus, 
+    .form-select:focus {
+      border-color: #667eea;
+      background: #fff;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .form-control::placeholder {
+      color: #adb5bd;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      color: #fff;
+    }
+
+    .btn-register:active {
+      transform: translateY(0);
+    }
+
+    .register-footer {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .register-footer p {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .register-footer a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .register-footer a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    /* Role Selection */
+    .role-selector {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .role-option {
+      flex: 1;
+      position: relative;
+    }
+
+    .role-option input[type="radio"] {
+      display: none;
+    }
+
+    .role-option label {
+      display: block;
+      padding: 15px;
+      background: #f8f9fc;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+      color: #6c757d;
+    }
+
+    .role-option input[type="radio"]:checked + label {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      border-color: #667eea;
+      color: #667eea;
+    }
+
+    /* Success Message */
+    .success-message {
+      background: #e8f5e9;
+      border-left: 4px solid #1cc88a;
+      color: #1b8668;
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      animation: slideDown 0.5s;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+      .register-card {
+        padding: 35px 25px;
+      }
+
+      .register-title {
+        font-size: 1.3rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .logo-icon {
+        font-size: 3rem;
+      }
+
+      .role-selector {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="register-card">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <i class="bi bi-lightning-charge-fill logo-icon"></i>
+        <div class="logo-text">SmartExam</div>
+        <div class="logo-subtitle">Platform Ujian Cerdas dengan AI</div>
+      </div>
+
+      <!-- Register Title -->
+      <h2 class="register-title">Buat Akun Baru</h2>
+
+      <!-- Register Form -->
+      <form method="POST" action="/register">
+        <div class="form-group">
+          <label class="form-label">
+            <i class="bi bi-person-circle"></i> Username
+          </label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+            <input type="text" class="form-control" name="username" placeholder="Pilih username unik Anda" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="bi bi-lock"></i> Password
+          </label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+            <input type="password" class="form-control" name="password" placeholder="Buat password yang kuat" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="bi bi-shield-check"></i> Tipe Pengguna
+          </label>
+          <div class="role-selector">
+            <div class="role-option">
+              <input type="radio" id="murid" name="role" value="murid" required>
+              <label for="murid">
+                <i class="bi bi-book"></i><br>
+                <small>Siswa</small>
+              </label>
+            </div>
+            <div class="role-option">
+              <input type="radio" id="pengajar" name="role" value="pengajar" required>
+              <label for="pengajar">
+                <i class="bi bi-briefcase"></i><br>
+                <small>Guru/Dosen</small>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-register">
+          <i class="bi bi-check-circle"></i> Daftar Sekarang
+        </button>
+      </form>
+
+      <!-- Footer -->
+      <div class="register-footer">
+        <p>Sudah punya akun? <a href="/login">Login di sini</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status");
+
+    if (status === "success") {
+      Swal.fire({
+        icon: 'success',
+        title: 'Pendaftaran Berhasil!',
+        text: 'Akun Anda telah terdaftar. Silahkan login sekarang.',
+        confirmButtonColor: '#667eea',
+        confirmButtonText: 'Login Sekarang'
+      }).then(() => {
+        window.location.href = "/login";
+      });
+    } else if (status === "error") {
+      Swal.fire({
+        icon: 'error',
+        title: 'Pendaftaran Gagal!',
+        text: 'Username sudah digunakan atau terjadi kesalahan. Silahkan coba lagi.',
+        confirmButtonColor: '#764ba2'
+      });
+    }
+  </script>
+</body>
+</html>
